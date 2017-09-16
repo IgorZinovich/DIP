@@ -15,7 +15,18 @@ namespace Laba1
             return map;
         }
 
-        static public Int32[] getHist(Bitmap map, Int32 type) // 0 - R 1 - G 2 - B
+        static public Int32[][] getHistRGB(Bitmap map)
+        {
+            Int32[][] rgb = { getHist(map, 0), getHist(map, 1), getHist(map, 2) };
+            return rgb;
+        }
+
+        static public Int32[] getHistGrayScale(Bitmap map)
+        {
+            return getHist(map, 0);
+        }
+
+        static private Int32[] getHist(Bitmap map, Int32 type) // 0 - R 1 - G 2 - B
         {
             Int32[] hist = new Int32[map.Height * map.Width];
             int j = 0;

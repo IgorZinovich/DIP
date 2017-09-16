@@ -15,6 +15,8 @@ namespace Laba1
         public Form1()
         {
             InitializeComponent();
+
+            maskSizeBox.Text = "1";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -23,42 +25,73 @@ namespace Laba1
 
             openFileDialog1.InitialDirectory = "c:\\";
             openFileDialog1.RestoreDirectory = true;
+            openFileDialog1.Filter = "Image files(*.jpeg;*.jpg;*.bmp;*.png)| *.jpeg;*.jpg;*.bmp;*.png";
+
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                int maskSize = 0;
+                try
+                {
+                    maskSize = Convert.ToInt32(maskSizeBox.Text);
+                }
+                catch ( Exception ex)
+                {
+                    MessageBox.Show("Размер маски должно быть положителное число", "Ошибка", 
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                Bitmap image = Functions.openImage(openFileDialog1.FileName);
+                execute(image, maskSize);
 
-
-                Bitmap imageOriginal = Functions.openImage(openFileDialog1.FileName);
-                Int32[][] masRGB = { Functions.getHist(imageOriginal, 0), Functions.getHist(imageOriginal, 1), 
-                                       Functions.getHist(imageOriginal, 2) };
-
-                //Functions.median(imageOriginal, 1);
-                // Bitmap imageGrey = Functions.Grayscale(imageOriginal);
-                /* Int32[] masY = Functions.getHist(imageGrey, 0);
-
-                 Bitmap imageOriginalN = Functions.Negativ(imageOriginal);
-                 Int32[][] masRGBN = { Functions.getHist(imageOriginalN, 0), Functions.getHist(imageOriginalN, 1), 
-                                        Functions.getHist(imageOriginalN, 2) */
-
-               /*  Bitmap imageGreyN = Functions.Negativ(imageGrey);
-                 Int32[] masYN = Functions.getHist(imageGreyN, 0);*/
-
-                //imageOriginal = Functions.noise(imageOriginal);
-                //imageOriginal = Functions.median(imageOriginal, 1);
-              /*  imageOriginal = Functions.avarage(imageOriginal);
-                Image windowOriginal = new Image(imageOriginal, masRGB);
-                windowOriginal.Show();
-
-                 Image windowGray = new Image(imageGrey, masY);
-                 windowGray.Show();*/
-
-                 /*Image windowOriginalN = new Image(imageOriginalN, masRGBN);
-                 windowOriginalN.Show();
-                 Image windowGrayN = new Image(imageGreyN, masYN);
-                 windowGrayN.Show();*/
+         
             }
         }
 
+        private void execute(Bitmap originalImage, int sizeMask)
+        {
 
+            new Image(originalImage, Functions.getHistRGB(originalImage), "Оригинадльное изображжение").Show();
+
+            // show grayScale images
+            Bitmap graeyImage = Functions.Grayscale(originalImage);
+            new Image(graeyImage, Functions.getHistGrayScale(graeyImage), "GrayScale изображение").Show();
+
+            //show Negativ RGB image
+            Bitmap negImage = Functions.Negativ(originalImage);
+            new Image(negImage, Functions.getHistRGB(negImage), "Изображение в негативе").Show();
+
+            //show Negativ greyscale image
+            Bitmap negGraeyImage = Functions.Negativ(graeyImage);
+            new Image(negGraeyImage, Functions.getHistGrayScale(negGraeyImage), "GrayScale изображение в негативе").Show();
+
+            //show image with noise
+            Bitmap noiseImage = Functions.noise(originalImage);
+            new Image(noiseImage,"Зашумленное изображение").Show();
+
+            //show greyscale image with noise
+            Bitmap noiseGreyImage = Functions.Grayscale(noiseImage);
+            new Image(noiseGreyImage, "Зашумленное grayScale изображение").Show();
+
+            //show media-Filter RGB image
+            Bitmap medianImage = Functions.median(noiseImage, sizeMask);
+            new Image(medianImage, Functions.getHistRGB(medianImage),
+                "Зашумленное изображение после медианного фильтра").Show();
+
+            //show media-Filter RGB greyscale image
+            Bitmap medianGraeyImage = Functions.median(noiseGreyImage, sizeMask);
+            new Image(medianGraeyImage, Functions.getHistGrayScale(medianGraeyImage),
+                "Зашумленное grayScale изображение после медианного фильтра").Show();
+
+            //show ??? RGB image
+            Bitmap avgImage = Functions.avarage(originalImage);
+            new Image(avgImage, Functions.getHistRGB(avgImage), "?????").Show();
+
+            //show ??? greyscale image
+            Bitmap avgGraeyImage = Functions.avarage(graeyImage);
+            new Image(avgGraeyImage, Functions.getHistGrayScale(avgGraeyImage), "?????").Show();
+
+
+        }
     }
 }

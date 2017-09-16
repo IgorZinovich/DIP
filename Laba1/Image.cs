@@ -17,10 +17,11 @@ namespace Laba1
         const int histWidth = 400;
         const int histHight = 300;
         int[] masX = Enumerable.Range(1, 256).ToArray();
-        public Image(Bitmap image, int[] masY) // 0 - black/white   1 - RGB
+        public Image(Bitmap image, int[] masY, string nameWindow) 
         {
             InitializeComponent();
 
+            this.Text = nameWindow; 
             this.Width = 4 * offset + image.Width + histWidth;
             this.Height = 3 * offset + image.Height > histWidth ? image.Height : histWidth;
 
@@ -42,11 +43,27 @@ namespace Laba1
 
         }
 
-        public Image(Bitmap image, int[][] masY)
+        public Image(Bitmap image, string nameWindow)
+        {
+            InitializeComponent();
+
+            this.Text = nameWindow;
+            this.Width = 2 * offset + image.Width;
+            this.Height = 2 * offset + image.Height;
+
+            PictureBox pBox = new PictureBox();
+            pBox.SetBounds(offset, offset, image.Width, image.Height);
+            pBox.Image = image;
+            this.Controls.Add(pBox);
+        }
+
+
+        public Image(Bitmap image, int[][] masY, string nameWindow)
         {
 
             InitializeComponent();
 
+            this.Text = nameWindow;
             this.Width = 5 * offset + image.Width + 2 * histWidth;
             this.Height = 3 * offset + image.Height > 2 * histWidth ? image.Height : 2 * histWidth;
 
