@@ -14,7 +14,7 @@ namespace Laba1
     public partial class Image : Form
     {
         const int offset = 10;
-        const int histWidth = 400;
+        const int histWidth = 350;
         const int histHight = 300;
         int[] masX = Enumerable.Range(1, 256).ToArray();
         public Image(Bitmap image, int[] masY, string nameWindow) 

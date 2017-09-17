@@ -12,10 +12,24 @@ namespace Laba1
 {
     public partial class Form1 : Form
     {
+        bool RGB = true;
+        bool flag = true;
+        bool Grey = true;
+        Bitmap originalImage;
+        Bitmap graeyImage;
+        Bitmap negImage;
+        Bitmap negGraeyImage;
+        Bitmap noiseGreyImage;
+        Bitmap noiseImage;
+        Bitmap medianImage;
+        Bitmap medianGraeyImage;
+        Bitmap avgImage;
+        Bitmap avgGraeyImage;
+        int maskSize = 1;
         public Form1()
         {
             InitializeComponent();
-
+            button2.Enabled = false;
             maskSizeBox.Text = "1";
         }
 
@@ -30,68 +44,203 @@ namespace Laba1
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                int maskSize = 0;
+
                 try
                 {
                     maskSize = Convert.ToInt32(maskSizeBox.Text);
                 }
-                catch ( Exception ex)
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Размер маски должно быть положителное число", "Ошибка", 
+                    MessageBox.Show("Размер маски должно быть положителное число", "Ошибка",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                Bitmap image = Functions.openImage(openFileDialog1.FileName);
-                execute(image, maskSize);
-
-         
+                this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+                textBox1.Text = openFileDialog1.FileName;
+                originalImage = Functions.openImage(openFileDialog1.FileName);
+                graeyImage = Functions.Grayscale(originalImage);
+                negImage = Functions.Negativ(originalImage);
+                negGraeyImage = Functions.Negativ(graeyImage);
+                noiseImage = Functions.noise(originalImage);
+                noiseGreyImage = Functions.Grayscale(noiseImage);
+                medianImage = Functions.median(noiseImage, maskSize);
+                medianGraeyImage = Functions.median(noiseGreyImage, maskSize);
+                avgImage = Functions.avarage(originalImage);
+                avgGraeyImage = Functions.avarage(graeyImage);
+                button2.Enabled = true;
+                this.Cursor = System.Windows.Forms.Cursors.Arrow;
             }
         }
 
-        private void execute(Bitmap originalImage, int sizeMask)
+        private void execute()
         {
-
-            new Image(originalImage, Functions.getHistRGB(originalImage), "Оригинадльное изображжение").Show();
-
+            if (checkBoxIm.Checked)
+            {
+                new Image(originalImage, Functions.getHistRGB(originalImage), "Оригинадльное изображжение").Show();
+            }
             // show grayScale images
-            Bitmap graeyImage = Functions.Grayscale(originalImage);
-            new Image(graeyImage, Functions.getHistGrayScale(graeyImage), "GrayScale изображение").Show();
+
+            if (checkBoxImG.Checked)
+            {
+                new Image(graeyImage, Functions.getHistGrayScale(graeyImage), "GrayScale изображение").Show();
+            }
 
             //show Negativ RGB image
-            Bitmap negImage = Functions.Negativ(originalImage);
-            new Image(negImage, Functions.getHistRGB(negImage), "Изображение в негативе").Show();
-
+            if (checkBoxNegativ.Checked)
+            {
+                new Image(negImage, Functions.getHistRGB(negImage), "Изображение в негативе").Show();
+            }
             //show Negativ greyscale image
-            Bitmap negGraeyImage = Functions.Negativ(graeyImage);
-            new Image(negGraeyImage, Functions.getHistGrayScale(negGraeyImage), "GrayScale изображение в негативе").Show();
+            if (checkBoxNegativG.Checked)
+            {
+                new Image(negGraeyImage, Functions.getHistGrayScale(negGraeyImage), "GrayScale изображение в негативе").Show();
+            }
 
             //show image with noise
-            Bitmap noiseImage = Functions.noise(originalImage);
-            new Image(noiseImage,"Зашумленное изображение").Show();
+            if (checkBoxNoise.Checked)
+            {
+                new Image(noiseImage, "Зашумленное изображение").Show();
+            }
 
             //show greyscale image with noise
-            Bitmap noiseGreyImage = Functions.Grayscale(noiseImage);
-            new Image(noiseGreyImage, "Зашумленное grayScale изображение").Show();
-
+            if (checkBoxNoiseG.Checked)
+            {
+                new Image(noiseGreyImage, "Зашумленное grayScale изображение").Show();
+            }
             //show media-Filter RGB image
-            Bitmap medianImage = Functions.median(noiseImage, sizeMask);
-            new Image(medianImage, Functions.getHistRGB(medianImage),
-                "Зашумленное изображение после медианного фильтра").Show();
+            if (checkBoxMedium.Checked)
+            {
+                new Image(medianImage, Functions.getHistRGB(medianImage),
+                    "Зашумленное изображение после медианного фильтра").Show();
+            }
 
             //show media-Filter RGB greyscale image
-            Bitmap medianGraeyImage = Functions.median(noiseGreyImage, sizeMask);
-            new Image(medianGraeyImage, Functions.getHistGrayScale(medianGraeyImage),
-                "Зашумленное grayScale изображение после медианного фильтра").Show();
 
+            if (checkBoxMediumG.Checked)
+            {
+                new Image(medianGraeyImage, Functions.getHistGrayScale(medianGraeyImage),
+                    "Зашумленное grayScale изображение после медианного фильтра").Show();
+            }
             //show ??? RGB image
-            Bitmap avgImage = Functions.avarage(originalImage);
-            new Image(avgImage, Functions.getHistRGB(avgImage), "?????").Show();
-
+            if (checkBoxAVG.Checked)
+            {
+                new Image(avgImage, Functions.getHistRGB(avgImage), "Изображение после фильтр «гармоническое среднее»").Show();
+            }
             //show ??? greyscale image
-            Bitmap avgGraeyImage = Functions.avarage(graeyImage);
-            new Image(avgGraeyImage, Functions.getHistGrayScale(avgGraeyImage), "?????").Show();
+            if (checkBoxAVGG.Checked)
+            {
+                new Image(avgGraeyImage, Functions.getHistGrayScale(avgGraeyImage), 
+                    "Изображение greyscale после фильтр «гармоническое среднее»").Show();
+            }
+
+        }
+
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox check = (CheckBox)sender;
+            if (check.CheckState != CheckState.Indeterminate)
+            {
+                flag = false;
+                checkBoxG.Checked = check.Checked;
+                checkBoxRGB.Checked = check.Checked;
+                flag = true;
+            }
+        }
+
+        private void checkBoxRGB_G_CheckStateChanged(object sender, EventArgs e)
+        {
+
+            CheckBox check = (CheckBox)sender;
 
 
+            if (check.CheckState != CheckState.Indeterminate)
+            {
+                if (check.Equals(this.checkBoxRGB))
+                {
+                    RGB = false;
+                    checkBoxIm.Checked = checkBoxRGB.Checked;
+                    checkBoxNegativ.Checked = checkBoxRGB.Checked;
+                    checkBoxNoise.Checked = checkBoxRGB.Checked;
+                    checkBoxMedium.Checked = checkBoxRGB.Checked;
+                    checkBoxAVG.Checked = checkBoxRGB.Checked;
+                    RGB = true;
+                }
+
+                if (check.Equals(this.checkBoxG))
+                {
+                    Grey = false;
+                    checkBoxImG.Checked = checkBoxG.Checked;
+                    checkBoxNegativG.Checked = checkBoxG.Checked;
+                    checkBoxNoiseG.Checked = checkBoxG.Checked;
+                    checkBoxMediumG.Checked = checkBoxG.Checked;
+                    checkBoxAVGG.Checked = checkBoxG.Checked;
+                    Grey = true;
+                }
+            }
+            if (!flag) return;
+            if (checkBoxRGB.CheckState == CheckState.Checked && checkBoxG.CheckState == CheckState.Checked)
+            {
+                checkBox3.CheckState = CheckState.Checked;
+            }
+            else if (checkBoxRGB.CheckState == CheckState.Unchecked && checkBoxG.CheckState == CheckState.Unchecked)
+            {
+                checkBox3.CheckState = CheckState.Unchecked;
+            }
+            else
+            {
+                checkBox3.CheckState = CheckState.Indeterminate;
+            }
+
+
+        }
+
+        private void checkBoxRGB_CheckChanged(object sender, EventArgs e)
+        {
+            if (RGB)
+            {
+                if (checkBoxIm.Checked && checkBoxNegativ.Checked && checkBoxNoise.Checked &&
+                  checkBoxAVG.Checked && checkBoxMedium.Checked)
+                {
+                    checkBoxRGB.CheckState = CheckState.Checked;
+                }
+                else if (!checkBoxIm.Checked && !checkBoxNegativ.Checked && !checkBoxNoise.Checked &&
+                  !checkBoxAVG.Checked && !checkBoxMedium.Checked)
+                {
+                    checkBoxRGB.CheckState = CheckState.Unchecked;
+                }
+                else
+                {
+                    checkBoxRGB.CheckState = CheckState.Indeterminate;
+                }
+            }
+        }
+
+        private void checkBoxG_CheckChanged(object sender, EventArgs e)
+        {
+            if (Grey)
+            {
+                if (checkBoxImG.Checked && checkBoxNegativG.Checked && checkBoxNoiseG.Checked &&
+                  checkBoxAVGG.Checked && checkBoxMediumG.Checked)
+                {
+                    checkBoxG.CheckState = CheckState.Checked;
+                }
+                else if (!checkBoxImG.Checked && !checkBoxNegativG.Checked && !checkBoxNoiseG.Checked &&
+                  !checkBoxAVGG.Checked && !checkBoxMediumG.Checked)
+                {
+                    checkBoxG.CheckState = CheckState.Unchecked;
+                }
+                else
+                {
+                    checkBoxG.CheckState = CheckState.Indeterminate;
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
+            execute();
+            this.Cursor = System.Windows.Forms.Cursors.Arrow;
         }
     }
 }
