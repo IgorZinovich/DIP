@@ -191,13 +191,14 @@ namespace Laba1
 
         public static Bitmap noise(Bitmap image)
         {
+            Bitmap newImage = (Bitmap)image.Clone();
             for (int i = 0; i < 20; i++)
             {
                 Int32 x = i + 2;//new Random().Next(image.Width);
                 Int32 y = 3;//new Random().Next(image.Height);
-                image.SetPixel(x, y, Color.FromArgb(255, 255, 255));
+                newImage.SetPixel(x, y, Color.FromArgb(255, 255, 255));
             }
-            return image;
+            return newImage;
         }
     }
 }

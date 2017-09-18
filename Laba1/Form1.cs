@@ -25,6 +25,16 @@ namespace Laba1
         Bitmap medianGraeyImage;
         Bitmap avgImage;
         Bitmap avgGraeyImage;
+
+        Int32[][] originalHist;
+        Int32[] graeyHist;
+        Int32[][] negHist;
+        Int32[] negGraeyHist;
+        Int32[][] medianHist;
+        Int32[] medianGraeyHist;
+        Int32[][] avgHist;
+        Int32[] avgGraeyHist;
+
         int maskSize = 1;
         public Form1()
         {
@@ -48,7 +58,7 @@ namespace Laba1
                 try
                 {
                     maskSize = Convert.ToInt32(maskSizeBox.Text);
-                }
+                }               
                 catch (Exception ex)
                 {
                     MessageBox.Show("Размер маски должно быть положителное число", "Ошибка",
@@ -67,8 +77,18 @@ namespace Laba1
                 medianGraeyImage = Functions.median(noiseGreyImage, maskSize);
                 avgImage = Functions.avarage(originalImage);
                 avgGraeyImage = Functions.avarage(graeyImage);
+
+                originalHist = Functions.getHistRGB(originalImage);
+                graeyHist = Functions.getHistGrayScale(graeyImage);
+                negHist = Functions.getHistRGB(negImage);
+                negGraeyHist = Functions.getHistGrayScale(negGraeyImage);
+                medianHist = Functions.getHistRGB(medianImage);
+                medianGraeyHist = Functions.getHistGrayScale(medianGraeyImage);
+                avgHist = Functions.getHistRGB(avgImage);
+                avgGraeyHist = Functions.getHistGrayScale(avgGraeyImage);
                 button2.Enabled = true;
                 this.Cursor = System.Windows.Forms.Cursors.Arrow;
+              
             }
         }
 
@@ -76,24 +96,24 @@ namespace Laba1
         {
             if (checkBoxIm.Checked)
             {
-                new Image(originalImage, Functions.getHistRGB(originalImage), "Оригинадльное изображжение").Show();
+                new Image(originalImage, originalHist, "Оригинадльное изображжение").Show();
             }
             // show grayScale images
 
             if (checkBoxImG.Checked)
             {
-                new Image(graeyImage, Functions.getHistGrayScale(graeyImage), "GrayScale изображение").Show();
+                new Image(graeyImage, graeyHist, "GrayScale изображение").Show();
             }
 
             //show Negativ RGB image
             if (checkBoxNegativ.Checked)
             {
-                new Image(negImage, Functions.getHistRGB(negImage), "Изображение в негативе").Show();
+                new Image(negImage, negHist, "Изображение в негативе").Show();
             }
             //show Negativ greyscale image
             if (checkBoxNegativG.Checked)
             {
-                new Image(negGraeyImage, Functions.getHistGrayScale(negGraeyImage), "GrayScale изображение в негативе").Show();
+                new Image(negGraeyImage, negGraeyHist, "GrayScale изображение в негативе").Show();
             }
 
             //show image with noise
@@ -110,7 +130,7 @@ namespace Laba1
             //show media-Filter RGB image
             if (checkBoxMedium.Checked)
             {
-                new Image(medianImage, Functions.getHistRGB(medianImage),
+                new Image(medianImage, medianHist,
                     "Зашумленное изображение после медианного фильтра").Show();
             }
 
@@ -118,18 +138,18 @@ namespace Laba1
 
             if (checkBoxMediumG.Checked)
             {
-                new Image(medianGraeyImage, Functions.getHistGrayScale(medianGraeyImage),
+                new Image(medianGraeyImage, medianGraeyHist,
                     "Зашумленное grayScale изображение после медианного фильтра").Show();
             }
             //show ??? RGB image
             if (checkBoxAVG.Checked)
             {
-                new Image(avgImage, Functions.getHistRGB(avgImage), "Изображение после фильтр «гармоническое среднее»").Show();
+                new Image(avgImage, avgHist, "Изображение после фильтр «гармоническое среднее»").Show();
             }
             //show ??? greyscale image
             if (checkBoxAVGG.Checked)
             {
-                new Image(avgGraeyImage, Functions.getHistGrayScale(avgGraeyImage), 
+                new Image(avgGraeyImage, avgGraeyHist, 
                     "Изображение greyscale после фильтр «гармоническое среднее»").Show();
             }
 
