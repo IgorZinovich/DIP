@@ -22,26 +22,11 @@ namespace Laba2
             this.Size = new Size(im.Width, im.Height);
             
             Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 230);
-            List<byte[][]> all = Functions.GetFigure(temp);
-            Functions.Perimetr(all[0]);
+            List<Figure> all = Functions.GetFigure(temp);
             box.Image = temp;
-            
+            Functions.Clustarization(all);
             this.Controls.Add(box);
         }
-       /* public void printf(byte[][] im)
-        {
-            StreamWriter sw = new StreamWriter(@"D:\444.txt");
-            for (int i = 0; i < im.Length; i++ )
-            {
-                for (int j = 0; j < im[i].Length; j++ )
-                {
-                    sw.Write(im[i][j].ToString());
-                }
-                sw.WriteLine();
-            }
-            sw.Close();
-            
-            
-        }*/
+
     }
 }

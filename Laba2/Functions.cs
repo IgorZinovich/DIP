@@ -9,13 +9,53 @@ namespace Laba2
 {
     class Functions
     {
+        struct MyPoint
+        {
+            public Double x;
+            public Double y;
+            public MyPoint(Double x, Double y)
+            {
+                this.x = x;
+                this.y = y;
+            }
+            public MyPoint(MyPoint source)
+            {
+                x = source.x;
+                y = source.y;
+            }
+            public Double GetDistance(Double x, Double y)
+            {
+                return Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2));
+            }
+            public override bool Equals(object obj)
+            {
+                MyPoint temp = (MyPoint)obj;
+                if(x == temp.x && y == temp.y)
+                {
+                    return true;
+                }
+                return false;
+            }
 
+            public void NewCenter(List<Figure> list)
+            {
+                Double x = 0;
+                Double y = 0;
+                foreach(var item in list)
+                {
+                    x += item.Perimetr;
+                    y += item.Elongation;
+                }
+                this.x = x / list.Count;
+                this.y = y / list.Count;
+            }
+            
+        }
         static public Bitmap openImage(string name)
         {
             Bitmap map = new Bitmap(name);
             return map;
         }
-
         public static Bitmap Binarization(Bitmap image, double bounds)
         {
             Bitmap newImage = new Bitmap(image.Width, image.Height);
@@ -30,35 +70,9 @@ namespace Laba2
             }
             return newImage;
         }
-
-        public static int Perimetr(byte[][] figure)
+        public static List<Figure> GetFigure(Bitmap image)
         {
-            
-            Int32 count = 0;
-            for (int x = 0; x < figure.Length; x++)
-            {    
-                 for (int y = 0; y < figure[x].Length; y++)
-                 {
-                     
-                     if (figure[x][y]==1)
-                     {
-                         {
-                             if((x == 0 || x == figure.Length - 1 || y == 0 || y == figure[x].Length -1) ||
-                                 (figure[x+1][y]==0 || figure[x-1][y]==0 || figure[x][y+1]==0 || figure[x][y-1]==0))
-                             {
-                                 count++;
-                             }
-                         }
-                     }
-                 }
-            }
-                
-            return count;
-        }
-
-        public static List<byte[][]> GetFigure(Bitmap image)
-        {
-            List<byte[][]> figures = new List<byte[][]>();
+            List<Figure> figures = new List<Figure>();
             for (int x = 0; x < image.Width; x++)
             {
 
@@ -69,15 +83,13 @@ namespace Laba2
                     {
                         byte[][] figure = fillBlack(image.Width, image.Height);
                         func1(image, x, y, ref figure);
-                        figures.Add(figure);
+                        figures.Add(new Figure(figure));
                     }
                 }
             }
 
             return figures;
         }
-
-
         private static void func1(Bitmap map,int x, int y, ref byte[][] figure)
         {
             map.SetPixel(x, y, Color.FromArgb(0, 0, 0));
@@ -117,7 +129,6 @@ namespace Laba2
             }
             return temp;
         }
-
         public static Bitmap median(Bitmap image, Int32 size)
         {
             Bitmap newImage = new Bitmap(image.Width, image.Height);
@@ -153,6 +164,47 @@ namespace Laba2
                 }
             }
             return newImage;
+        }
+        public static void Clustarization(List<Figure> list)
+        {
+            Double maxP = 0;
+            foreach(var item in list)
+            {
+                if (maxP < item.Perimetr)
+                    maxP = item.Perimetr;
+            }
+            Random rand = new Random();
+            MyPoint clust1Center = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
+            MyPoint clust2Center = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
+            List<Figure> clust1 = new List<Figure>();
+            List<Figure> clust2 = new List<Figure>();
+            while (true)
+            {
+                clust1.Clear();
+                clust2.Clear();
+                MyPoint check1 = new MyPoint(clust1Center);
+                MyPoint check2 = new MyPoint(clust2Center);
+                foreach (var figure in list)
+                {
+                    if (clust1Center.GetDistance(figure.Perimetr, figure.Elongation) < clust2Center.GetDistance(figure.Perimetr, figure.Elongation))
+                    {
+                        clust1.Add(figure);
+                    }
+                    else
+                    {
+                        clust2.Add(figure);
+                    }
+                }
+                clust1Center.NewCenter(clust1);
+                clust2Center.NewCenter(clust2);
+
+                if(clust1Center.Equals(check1) && clust2Center.Equals(check2))
+                {
+                    break;
+                }
+                Console.WriteLine("12");
+            }
+
         }
     }
 }
