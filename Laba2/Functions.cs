@@ -166,7 +166,7 @@ namespace Laba2
             }
             return newImage;
         }
-        public static void Clustarization(List<Figure> list, int count)
+        public static List<Figure>[] Clustarization(List<Figure> list, int count)
         {
             Double maxP = 0;
             foreach(var item in list)
@@ -221,9 +221,11 @@ namespace Laba2
                         flag = true;
                         break;
                     }
+                    i++;
                 }
+                
             }
-
+            return clust;
         }
     }
 }

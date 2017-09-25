@@ -9,7 +9,7 @@ namespace Laba2
 {
     class Figure
     {
-        private Byte[][] map;
+        public Byte[][] map{get; private set;}
 
         private Int32 per;
         public Double Perimetr { get { return Convert.ToDouble(per); } }
