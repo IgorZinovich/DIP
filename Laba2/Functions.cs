@@ -13,6 +13,7 @@ namespace Laba2
         {
             public Double x;
             public Double y;
+
             public MyPoint(Double x, Double y)
             {
                 this.x = x;
@@ -165,7 +166,7 @@ namespace Laba2
             }
             return newImage;
         }
-        public static void Clustarization(List<Figure> list)
+        public static void Clustarization(List<Figure> list, int count)
         {
             Double maxP = 0;
             foreach(var item in list)
@@ -174,35 +175,53 @@ namespace Laba2
                     maxP = item.Perimetr;
             }
             Random rand = new Random();
-            MyPoint clust1Center = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
-            MyPoint clust2Center = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
-            List<Figure> clust1 = new List<Figure>();
-            List<Figure> clust2 = new List<Figure>();
-            while (true)
+            MyPoint[] clustCenter = new MyPoint[count];
+            List<Figure>[] clust = new List<Figure>[count];
+            MyPoint[] check = new MyPoint[count];
+            for(int i =0; i< count; i++)
             {
-                clust1.Clear();
-                clust2.Clear();
-                MyPoint check1 = new MyPoint(clust1Center);
-                MyPoint check2 = new MyPoint(clust2Center);
+                clustCenter[i] = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
+                clust[i] = new List<Figure>();
+                
+            }
+            
+            //MyPoint clust2Center = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
+            bool flag = true;
+            while (flag)
+            {
+                for(int j = 0; j< clustCenter.Count(); j++)
+                {
+                    check[j] = new MyPoint(clustCenter[j]);
+                }
+                foreach(var clustItem in clust)
+                {
+                    clustItem.Clear();
+                }
                 foreach (var figure in list)
                 {
-                    if (clust1Center.GetDistance(figure.Perimetr, figure.Elongation) < clust2Center.GetDistance(figure.Perimetr, figure.Elongation))
+                    List<Double> dist = new List<Double>();
+                    foreach(var center in clustCenter)
                     {
-                        clust1.Add(figure);
+                        dist.Add(center.GetDistance(figure.Perimetr, figure.Elongation));
                     }
-                    else
-                    {
-                        clust2.Add(figure);
-                    }
+                    clust[dist.IndexOf(dist.Min())].Add(figure);
                 }
-                clust1Center.NewCenter(clust1);
-                clust2Center.NewCenter(clust2);
-
-                if(clust1Center.Equals(check1) && clust2Center.Equals(check2))
+                int i = 0;
+                foreach (var center in clustCenter)
                 {
-                    break;
+                    center.NewCenter(clust[i]);
+                    i++;
                 }
-                Console.WriteLine("12");
+                i = 0;
+                flag = false;
+                foreach (var center in clustCenter)
+                {
+                    if (!center.Equals(check[i]))
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
             }
 
         }
