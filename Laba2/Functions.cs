@@ -7,8 +7,10 @@ using System.Drawing;
 
 namespace Laba2
 {
+   
     class Functions
     {
+        public static int aaa = 0;
         struct MyPoint
         {
             public Double x;
@@ -71,8 +73,13 @@ namespace Laba2
             }
             return newImage;
         }
+
+        static byte[][] figure = null;
+        static Bitmap map = null;
+
         public static List<Figure> GetFigure(Bitmap image)
         {
+            map = image;
             List<Figure> figures = new List<Figure>();
             for (int x = 0; x < image.Width; x++)
             {
@@ -82,40 +89,86 @@ namespace Laba2
 
                     if (image.GetPixel(x, y).R == 255)
                     {
-                        byte[][] figure = fillBlack(image.Width, image.Height);
-                        func1(image, x, y, ref figure);
-                        figures.Add(new Figure(figure));
+                        figure = fillBlack(image.Width, image.Height);
+                        func1(x, y);
+                        figures.Add(new Figure(figure,x,y));
                     }
                 }
             }
 
             return figures;
         }
-        private static void func1(Bitmap map,int x, int y, ref byte[][] figure)
+        /*private static void func1(int x, int y)
         {
+            aaa++;
             map.SetPixel(x, y, Color.FromArgb(0, 0, 0));
             figure[x][y] = 1;
             if (x > 0)
                 if (map.GetPixel(x - 1, y).R == 255)
                 {
-                    func1(map, x - 1, y, ref figure);
+                    func1(x - 1, y);
                 }
             if (y > 0)
                 if (map.GetPixel(x, y - 1).R == 255)
                 {
-                    func1(map, x, y - 1, ref figure);
+                    func1(x, y - 1);
                 }
             if (x < map.Width - 1)
                 if (map.GetPixel(x + 1, y).R == 255)
                 {
-                    func1(map, x + 1, y, ref figure);
+                    func1(x + 1, y);
                 }
             if (y < map.Height - 1)
                 if (map.GetPixel(x, y + 1).R == 255)
                 {
-                    func1(map, x, y + 1, ref figure);
+                    func1(x, y + 1);
                 }
 
+        }*/
+
+
+        private static void func1(Int32 x, Int32 y)
+        {
+            
+            Stack<Point> stack = new Stack<Point>();
+
+            do
+            {
+                map.SetPixel(x, y, Color.FromArgb(0, 0, 0));
+                figure[x][y] = 1;
+                if (x > 0)
+                    if (map.GetPixel(x - 1, y).R == 255)
+                    {
+                        stack.Push(new Point(x - 1, y));
+                    }
+                if (y > 0)
+                    if (map.GetPixel(x, y - 1).R == 255)
+                    {
+                        stack.Push(new Point(x, y - 1));
+                    }
+                if (x < map.Width - 1)
+                    if (map.GetPixel(x + 1, y).R == 255)
+                    {
+                        stack.Push(new Point(x + 1, y));
+                    }
+                if (y < map.Height - 1)
+                    if (map.GetPixel(x, y + 1).R == 255)
+                    {
+                        stack.Push(new Point(x, y + 1));
+                    }
+                Point p = stack.Pop();
+                x = p.X;
+                y = p.Y;
+            }
+            while (stack.Count != 0);
+
+        }
+        public void func2(Bitmap image, Int32 x, Int32 y)
+        {
+            for (int i = y; image.GetPixel(x, i).R == 255; i++);
+            {
+
+            }
         }
         private static byte[][] fillBlack(int x, int y)
         {

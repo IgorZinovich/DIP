@@ -16,14 +16,14 @@ namespace Laba2
         public Form1()
         {
             InitializeComponent();
-            Bitmap im = Functions.openImage(@"C:\Users\diego\Desktop\easy\P0001468.jpg");
+            Bitmap im = Functions.openImage(@"C:\Users\diego\Desktop\easy\P0001469.jpg");
             PictureBox box = new PictureBox();
-            box.SetBounds(0, 0, im.Width, im.Height + 50);
-            this.Size = new Size(im.Width, im.Height);
-            Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 225);
+            box.SetBounds(0, 0, im.Width, im.Height );
+            this.Size = new Size(im.Width, im.Height + 40);
+            Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 205);
             List<Figure> all = Functions.GetFigure(temp);
             
-            List<Figure>[] clust = Functions.Clustarization(all, 2);
+            List<Figure>[] clust = Functions.Clustarization(all, 5);
             highlight(im, clust);
             box.Image = im;
             this.Controls.Add(box);
@@ -44,12 +44,16 @@ namespace Laba2
                                 Color color = image.GetPixel(x, y);
                                 switch (i)
                                 {
-                                    case 0: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R * 0.3),
-                                        Convert.ToInt32(color.G), Convert.ToInt32(color.B * 0.3))); break;
+                                    case 0: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R * 0.5),
+                                        Convert.ToInt32(color.G), Convert.ToInt32(color.B * 0.5))); break;
                                     case 1: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R),
-                                        Convert.ToInt32(color.G * 0.3), Convert.ToInt32(color.B * 0.3))); break;
-                                    default: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R * 0.3),
-                                        Convert.ToInt32(color.G * 0.3), Convert.ToInt32(color.B * 0.3))); break;
+                                        Convert.ToInt32(color.G * 0.5), Convert.ToInt32(color.B * 0.5))); break;
+                                    case 2: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R),
+                                    Convert.ToInt32(color.G), Convert.ToInt32(color.B * 0.5))); break;
+                                    case 3: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R * 0.5),
+                               Convert.ToInt32(color.G * 0.5), Convert.ToInt32(color.B))); break;
+                                    default: image.SetPixel(x, y, Color.FromArgb(Convert.ToInt32(color.R * 0.5),
+                                        Convert.ToInt32(color.G * 0.5), Convert.ToInt32(color.B * 0.5))); break;
                                 }
                             }
                         }

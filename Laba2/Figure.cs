@@ -22,11 +22,12 @@ namespace Laba2
         public Int32 minY { get; private set; }
         public Int32 maxY { get; private set; }
 
-        public Figure(Byte[][] map)
+        public Figure(Byte[][] map, int x, int y)
         {
             this.map = map;
             GetPerimetr();
             GetElongation();
+            printf(x.ToString() + y.ToString());
 
         }
 
@@ -59,9 +60,9 @@ namespace Laba2
                 Convert.ToDouble(maxX - minX) / Convert.ToDouble(maxY - minY) :
                 Convert.ToDouble(maxY - minY) / Convert.ToDouble(maxX - minX);
         }
-        public void printf()
+        public void printf(String name)
         {
-            StreamWriter sw = new StreamWriter(@"D:\444.txt");
+            StreamWriter sw = new StreamWriter(@"D:\" + name + ".txt");
             for (int i = 0; i < map.Length; i++)
             {
                 for (int j = 0; j < map[i].Length; j++)
