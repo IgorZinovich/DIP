@@ -13,17 +13,17 @@ namespace Laba2
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        public Form1(String name, int count)
         {
             InitializeComponent();
-            Bitmap im = Functions.openImage(@"C:\Users\diego\Desktop\easy\P0001469.jpg");
+            Bitmap im = Functions.openImage(name);
             PictureBox box = new PictureBox();
             box.SetBounds(0, 0, im.Width, im.Height );
             this.Size = new Size(im.Width, im.Height + 40);
             Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 205);
             List<Figure> all = Functions.GetFigure(temp);
             
-            List<Figure>[] clust = Functions.Clustarization(all, 5);
+            List<Figure>[] clust = Functions.Clustarization(all, count);
             highlight(im, clust);
             box.Image = im;
             this.Controls.Add(box);

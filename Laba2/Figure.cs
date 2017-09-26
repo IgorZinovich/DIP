@@ -11,8 +11,12 @@ namespace Laba2
     {
         public Byte[][] map{get; private set;}
 
-        private Int32 per;
-        public Double Perimetr { get { return Convert.ToDouble(per); } }
+        private Double per;
+        public Double Perimetr { get { return per; } }
+
+        private Double den;
+
+        public Double Density { get { return den; } }
 
         private Double elon;
         public Double Elongation { get { return elon; } }
@@ -25,22 +29,23 @@ namespace Laba2
         public Figure(Byte[][] map, int x, int y)
         {
             this.map = map;
-            GetPerimetr();
-            GetElongation();
+            GetPerimetrAndSquare();
             printf(x.ToString() + y.ToString());
 
         }
 
-        private void GetPerimetr()
+        private void GetPerimetrAndSquare()
         {
-            minX = map.Length;
-            minY = map[0].Length;
-            maxX = 0;
-            maxY = 0;
+            int square = 0;
+            double xc = 0, yc = 0;
+ 
             for (int x = 0; x < map.Length; x++)
                 for (int y = 0; y < map[x].Length; y++)
                     if (map[x][y] == 1)
                     {
+                        square++;
+                        xc += x;
+                        yc += y;
                         if ((x == 0 || x == map.Length - 1 || y == 0 || y == map[x].Length - 1) ||
                             (map[x + 1][y] == 0 || map[x - 1][y] == 0 || map[x][y + 1] == 0 || map[x][y - 1] == 0))
                         {
@@ -51,15 +56,23 @@ namespace Laba2
                         if (y < minY) minY = y;
                         if (y > maxY) maxY = y;
                     }
-
+            xc /= square;
+            yc /= square;
+            double m20 = 0, m02 = 0, m11 = 0;
+            for (int x = 0; x < map.Length; x++)
+                for (int y = 0; y < map[x].Length; y++)
+                    if (map[x][y] == 1)
+                    {
+                        m11 += (x - xc) * (y - yc);
+                        m20 += (x - xc) * (x - xc);
+                        m02 += (y - yc) * (y - yc);
+                    }
+            den = per * per / square;
+            elon = (m02 + m20 + Math.Sqrt(Math.Pow(m20 - m02, 2) + 4 * Math.Pow(m11, 2))) /
+                (m02 + m20 - Math.Sqrt(Math.Pow(m20 - m02, 2) + 4 * Math.Pow(m11, 2)));
+            
         }
 
-        private void GetElongation()
-        {
-            elon = (Convert.ToDouble(maxX - minX) / Convert.ToDouble(maxY - minY)) > 1.0 ?
-                Convert.ToDouble(maxX - minX) / Convert.ToDouble(maxY - minY) :
-                Convert.ToDouble(maxY - minY) / Convert.ToDouble(maxX - minX);
-        }
         public void printf(String name)
         {
             StreamWriter sw = new StreamWriter(@"D:\" + name + ".txt");
@@ -72,6 +85,13 @@ namespace Laba2
                 sw.WriteLine();
             }
             sw.Close();
+        }
+
+        public void normalization(double perimetr, double elongation, double density)
+        {
+            den /= density;
+            per /= perimetr;
+            elon /= elongation;
         }
 
     }

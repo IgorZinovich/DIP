@@ -13,27 +13,30 @@ namespace Laba2
         public static int aaa = 0;
         struct MyPoint
         {
-            public Double x;
-            public Double y;
+            Double x;
+            Double z;
+            Double y;
 
-            public MyPoint(Double x, Double y)
+            public MyPoint(Double x, Double y, Double z)
             {
                 this.x = x;
+                this.z = z;
                 this.y = y;
             }
             public MyPoint(MyPoint source)
             {
                 x = source.x;
                 y = source.y;
+                z = source.z;
             }
             public Double GetDistance(Double x, Double y)
             {
-                return Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2));
+                return Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) + Math.Pow(this.z - z, 2);
             }
             public override bool Equals(object obj)
             {
                 MyPoint temp = (MyPoint)obj;
-                if(x == temp.x && y == temp.y)
+                if(x == temp.x && y == temp.y && z == temp.z)
                 {
                     return true;
                 }
@@ -48,8 +51,10 @@ namespace Laba2
                 {
                     x += item.Perimetr;
                     y += item.Elongation;
+                    z += item.Density; 
                 }
                 this.x = x / list.Count;
+                this.z = z / list.Count;
                 this.y = y / list.Count;
             }
             
@@ -221,11 +226,19 @@ namespace Laba2
         }
         public static List<Figure>[] Clustarization(List<Figure> list, int count)
         {
+            //Normalization(list);
             Double maxP = 0;
+            Double maxE = 0;
+            Double maxD = 0;
             foreach(var item in list)
             {
                 if (maxP < item.Perimetr)
                     maxP = item.Perimetr;
+                if (maxE < item.Elongation)
+                    maxE = item.Elongation;
+                if (maxD < item.Density)
+                    maxD = item.Density;
+
             }
             Random rand = new Random();
             MyPoint[] clustCenter = new MyPoint[count];
@@ -233,7 +246,8 @@ namespace Laba2
             MyPoint[] check = new MyPoint[count];
             for(int i =0; i< count; i++)
             {
-                clustCenter[i] = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), rand.NextDouble());
+                clustCenter[i] = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), Convert.ToDouble(rand.Next(Convert.ToInt32(maxE + 1))),
+                    Convert.ToDouble(rand.Next(Convert.ToInt32(maxD + 1))));
                 clust[i] = new List<Figure>();
                 
             }
@@ -279,6 +293,21 @@ namespace Laba2
                 
             }
             return clust;
+        }
+        static void Normalization(List<Figure> list)
+        {
+            double density = 0, perimetr = 0, elongation = 0;
+            foreach( var item in list)
+            {
+                density += item.Density;
+                perimetr += item.Perimetr;
+                elongation += item.Elongation;
+            }
+            foreach (var item in list)
+            {
+                item.normalization(perimetr, elongation, density);
+            }
+
         }
     }
 }
