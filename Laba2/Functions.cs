@@ -13,30 +13,30 @@ namespace Laba2
         public static int aaa = 0;
         struct MyPoint
         {
-            Double x;
-            Double z;
-            Double y;
+            public Double x;
+           // Double z;
+            public Double y;
 
-            public MyPoint(Double x, Double y, Double z)
+            public MyPoint(Double x, Double y/*, Double z*/)
             {
                 this.x = x;
-                this.z = z;
+             //   this.z = z;
                 this.y = y;
             }
             public MyPoint(MyPoint source)
             {
                 x = source.x;
                 y = source.y;
-                z = source.z;
+              //  z = source.z;
             }
-            public Double GetDistance(Double x, Double y)
+            public Double GetDistance(Double x, Double y/*, Double z*/)
             {
-                return Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2)) + Math.Pow(this.z - z, 2);
+                return Math.Sqrt(Math.Pow(this.x - x, 2) + Math.Pow(this.y - y, 2))/* + Math.Pow(this.z - z, 2)*/;
             }
             public override bool Equals(object obj)
             {
                 MyPoint temp = (MyPoint)obj;
-                if(x == temp.x && y == temp.y && z == temp.z)
+                if(x == temp.x && y == temp.y/* && z == temp.z*/)
                 {
                     return true;
                 }
@@ -45,16 +45,18 @@ namespace Laba2
 
             public void NewCenter(List<Figure> list)
             {
+                if (list.Count == 0) return;
                 Double x = 0;
                 Double y = 0;
+                //Double z = 0;
                 foreach(var item in list)
                 {
                     x += item.Perimetr;
                     y += item.Elongation;
-                    z += item.Density; 
+                  //  z += item.Density; 
                 }
                 this.x = x / list.Count;
-                this.z = z / list.Count;
+               // this.z = z / list.Count;
                 this.y = y / list.Count;
             }
             
@@ -229,6 +231,8 @@ namespace Laba2
             //Normalization(list);
             Double maxP = 0;
             Double maxE = 0;
+            Double minE = Double.MaxValue;
+            Double minP = Double.MaxValue;
             Double maxD = 0;
             foreach(var item in list)
             {
@@ -238,16 +242,25 @@ namespace Laba2
                     maxE = item.Elongation;
                 if (maxD < item.Density)
                     maxD = item.Density;
+                if (minP > item.Perimetr)
+                    minP = item.Perimetr;
+                if (minE > item.Elongation)
+                    minE = item.Elongation;
 
             }
+            Double step = (maxE - minE) / (count + 1);
+            Double step1 = (maxP - minP) / (count + 1); 
+
             Random rand = new Random();
             MyPoint[] clustCenter = new MyPoint[count];
             List<Figure>[] clust = new List<Figure>[count];
             MyPoint[] check = new MyPoint[count];
+
             for(int i =0; i< count; i++)
             {
-                clustCenter[i] = new MyPoint(Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), Convert.ToDouble(rand.Next(Convert.ToInt32(maxE + 1))),
-                    Convert.ToDouble(rand.Next(Convert.ToInt32(maxD + 1))));
+                int z = rand.Next(list.Count);
+                clustCenter[i] = new MyPoint(list[z].Perimetr,list[z].Elongation/*Convert.ToDouble(rand.Next(Convert.ToInt32(maxP + 1))), Convert.ToDouble(rand.Next(Convert.ToInt32(maxE + 1)))*/
+                  /*  Convert.ToDouble(rand.Next(Convert.ToInt32(maxD + 1)))*/);
                 clust[i] = new List<Figure>();
                 
             }
@@ -269,14 +282,14 @@ namespace Laba2
                     List<Double> dist = new List<Double>();
                     foreach(var center in clustCenter)
                     {
-                        dist.Add(center.GetDistance(figure.Perimetr, figure.Elongation));
+                        dist.Add(center.GetDistance(figure.Perimetr, figure.Elongation/*, figure.Density-*/));
                     }
                     clust[dist.IndexOf(dist.Min())].Add(figure);
                 }
                 int i = 0;
-                foreach (var center in clustCenter)
+                for (int j = 0; j < count; j++ )
                 {
-                    center.NewCenter(clust[i]);
+                    clustCenter[j].NewCenter(clust[j]);
                     i++;
                 }
                 i = 0;
@@ -292,6 +305,8 @@ namespace Laba2
                 }
                 
             }
+             foreach (var center in clustCenter)
+            Console.WriteLine(center.x.ToString() + "   " + center.y.ToString());
             return clust;
         }
         static void Normalization(List<Figure> list)

@@ -30,7 +30,7 @@ namespace Laba2
         {
             this.map = map;
             GetPerimetrAndSquare();
-            printf(x.ToString() + y.ToString());
+            //printf(x.ToString() + y.ToString());
 
         }
 

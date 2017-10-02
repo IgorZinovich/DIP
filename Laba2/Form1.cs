@@ -20,12 +20,12 @@ namespace Laba2
             PictureBox box = new PictureBox();
             box.SetBounds(0, 0, im.Width, im.Height );
             this.Size = new Size(im.Width, im.Height + 40);
-            Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 205);
-            List<Figure> all = Functions.GetFigure(temp);
+            Bitmap temp = Functions.Binarization(Functions.median(Functions.median(im, 2), 1), 120);
+            //List<Figure> all = Functions.GetFigure(temp);
             
-            List<Figure>[] clust = Functions.Clustarization(all, count);
-            highlight(im, clust);
-            box.Image = im;
+           // List<Figure>[] clust = Functions.Clustarization(all, count);
+            //highlight(im, clust);
+            box.Image = temp;
             this.Controls.Add(box);
         }
         private void highlight(Bitmap image, List<Figure>[] clusters)

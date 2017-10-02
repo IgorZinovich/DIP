@@ -14,24 +14,22 @@ namespace Laba2
     {
         public Form2()
         {
-            textBox1.Text = "2";
             InitializeComponent();
+            textBox1.Text = "2";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
 
             Int32 count;
-             OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
             
             openFileDialog1.InitialDirectory = @"C:\Users\diego\Desktop\easy\";
             openFileDialog1.RestoreDirectory = true;
             openFileDialog1.Filter = "Image files(*.jpeg;*.jpg;*.bmp;*.png)| *.jpeg;*.jpg;*.bmp;*.png";
 
-
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-
                 try
                 {
                     count = Convert.ToInt32(textBox1.Text);
