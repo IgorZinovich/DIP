@@ -8,19 +8,24 @@ namespace Laba4
 {
     class CompetitevNetwork
     {
-        readonly static int N = 36;
-        readonly static int M = 5;
+        readonly int N = 36;
+        readonly int M = 5;
         readonly double beta = 0.01;
-        double e = 0.01;
+        double e = 0.00001;
         int maxEpoh = 100000;
         double[][] w;
-        int[] win = new int[M]; 
+        int[] win;
 
-        public CompetitevNetwork()
+        public CompetitevNetwork(int M, int maxEpoh, double e, double beta)
         {
+            this.M = M;
+            this.maxEpoh = maxEpoh;
+            this.e = e;
+            this.beta = beta;
             Random rand = new Random();
             w = new double[M][];
-            for(int i = 0; i< M; i++)
+            win = new int[M];
+            for (int i = 0; i< M; i++)
             {
                 w[i] = new double[N];
                 for(int j = 0; j < w[i].Length; j++)
@@ -81,7 +86,6 @@ namespace Laba4
                     break;
                 }
                 epoha++;
-                Console.WriteLine(epoha.ToString()+"  -  "+maxRast.ToString());
             } while (epoha < maxEpoh);
             
             return 0;
@@ -110,12 +114,13 @@ namespace Laba4
         {
             int clusterNumber = 0;
             double max = 0;
+            double[] newIm = normirovka(image);
             for(int j = 0; j < w.Length; j++)
             {
                 double sum = 0;
-                for (int i = 0; i < image.Length; i++)
+                for (int i = 0; i < newIm.Length; i++)
                 {
-                    sum += Convert.ToDouble(image[i]) * w[j][i];
+                    sum += newIm[i] * w[j][i];
                 }
                 if(sum>max)
                 {
