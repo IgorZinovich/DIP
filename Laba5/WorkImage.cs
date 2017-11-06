@@ -5,7 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Threading.Tasks;
 
-namespace Laba4
+namespace Laba5
 {
     class WorkImage
     {
@@ -13,6 +13,7 @@ namespace Laba4
         public List<Bitmap> list { get; set; }
         public List<double[]> vectors { get; set; }
 
+        public List<double[]> cluster { get; set; }
 
         public List<Bitmap> noiseList { get; set; }
         public List<double[]> vectorsNoise { get; set; }
@@ -23,9 +24,15 @@ namespace Laba4
         {
             list = new List<Bitmap>();
             vectors = new List<double[]>();
+            cluster = new List<double[]>();
+
             string aa = System.IO.Directory.GetCurrentDirectory();
+
             for (int i = 0; i < N; i++)
             {
+                double[] cl = new double[N];
+                cl[i] = 1;
+                cluster.Add(cl); 
                 string fileName = path + (i + 1).ToString() + ".png";
                 Bitmap image = new Bitmap(fileName);
                 list.Add(image);
@@ -41,7 +48,7 @@ namespace Laba4
             {
                 for (int x = 0; x < image.Width; x++)
                 {
-                    im[x + y * image.Height] = (double)image.GetPixel(x, y).R;
+                    im[x + y * image.Height] = image.GetPixel(x, y).R / 255;
                 }
             }
             return im;
@@ -49,7 +56,7 @@ namespace Laba4
 
         public void SetNoise(int percent)
         {
-            
+
             noiseList = new List<Bitmap>();
             vectorsNoise = new List<double[]>();
             Random rand = new Random();
@@ -71,7 +78,7 @@ namespace Laba4
                     byte pixel = image.GetPixel(x, y).R;
                     pixel = (byte)(~pixel);
                     image.SetPixel(x, y, Color.FromArgb(pixel, pixel, pixel));
-                    
+
                 }
                 noiseList.Add(image);
                 vectorsNoise.Add(ItoD(noiseList[j]));
@@ -82,7 +89,7 @@ namespace Laba4
         {
             Bitmap newIm = new Bitmap(im.Width * n, im.Height * n);
 
-            for(int i = 0; i < im.Width; i++)
+            for (int i = 0; i < im.Width; i++)
             {
                 for (int j = 0; j < im.Height; j++)
                 {
