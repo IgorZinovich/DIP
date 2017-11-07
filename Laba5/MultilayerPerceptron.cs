@@ -12,7 +12,8 @@ namespace Laba5
         private double[] Q, T;
         private double alpha = 2, beta = 2;
         private int n, h, m;
-        private double D = 0.00001;
+        private double D;
+        public bool accur { get; private set; }
         Random rand = new Random();
 
 
@@ -21,9 +22,12 @@ namespace Laba5
             return 1.0 / (1.0 + Math.Pow(Math.E, -1.0 * x));
         }
 
-        public MultilayerPerceptron(int n = 36, int m = 5, int h = 0)
+        public MultilayerPerceptron(double alpha, double beta, double D, int n = 36, int m = 5, int h = 0)
         {
-
+            accur = true;
+            this.alpha = alpha;
+            this.beta = beta;
+            this.D = D;
             this.n = n;
            
             this.m = m;
@@ -104,10 +108,11 @@ namespace Laba5
 
         public void learn(List<double[]> images, List<double[]> clust)
         {
-            double dmin = 0;
+            double dmin = double.MaxValue;
             int pp = 0;
             do
             {
+                dmin = 0;
                 foreach (var image in images)
                 {
                     double[] g = getLayer(image, Q, v);
@@ -115,10 +120,10 @@ namespace Laba5
 
                     double[] dk = getDk(clust[images.IndexOf(image)], y);
 
-                    double d1 = (Math.Abs(dk.Max()) < Math.Abs(dk.Min())) ? Math.Abs(dk.Min()) : Math.Abs(dk.Max());
-                    if (d1 > dmin)
+                    int idx = Array.IndexOf(clust[images.IndexOf(image)], 1.0);
+                    if (dk[idx] > dmin)
                     {
-                        dmin = d1;
+                        dmin = dk[idx];
                     }
 
                     //поправка выходных коэффициентов
@@ -153,9 +158,11 @@ namespace Laba5
                 }
                 if(pp++ == 100000)
                 {
+                    accur = false;
                     break;
                 }
             } while (dmin > D );
+            Console.WriteLine(dmin);
         }
 
 

@@ -18,10 +18,11 @@ namespace Laba5
         public List<Bitmap> noiseList { get; set; }
         public List<double[]> vectorsNoise { get; set; }
 
-        string path = @"D:\Learn\4 курс\ЦОСиИ\DIP\Laba4\Image\";
+        string path;
         int N = 5;
-        public WorkImage()
+        public WorkImage(string path)
         {
+            this.path = path;
             list = new List<Bitmap>();
             vectors = new List<double[]>();
             cluster = new List<double[]>();
@@ -33,7 +34,7 @@ namespace Laba5
                 double[] cl = new double[N];
                 cl[i] = 1;
                 cluster.Add(cl); 
-                string fileName = path + (i + 1).ToString() + ".png";
+                string fileName = path + "\\"+ (i + 1).ToString() + ".png";
                 Bitmap image = new Bitmap(fileName);
                 list.Add(image);
                 vectors.Add(ItoD(image));
